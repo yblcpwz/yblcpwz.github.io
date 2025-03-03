@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>像素花瓣游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="home" class="container">
+        <h1>首页</h1>
+        <a href="index.html"><button ">开始游戏</button></a>
+        <a href="demo3.html"><button onclick="showLeaderboard()">排行榜</button></a>
+        <button onclick="showRules()">游戏规则</button>
+    </div>
+
+    <div id="rules" class="container hidden">
+        <h1>游戏规则</h1>
+        <p>这里是游戏规则的内容。</p>
+        <button onclick="showHome()">返回</button>
+    </div>
+
+    <script>
+        function showHome() {
+            document.getElementById('home').classList.remove('hidden');
+            document.getElementById('rules').classList.add('hidden');
+        }
+
+        function showLeaderboard() {
+            document.getElementById('home').classList.add('hidden');
+        }
+
+        function showRules() {
+            document.getElementById('home').classList.add('hidden');
+            document.getElementById('rules').classList.remove('hidden');
+        }
+
+        /* function startGame() {
+            alert('开始游戏！');
+            // 这里可以添加跳转到游戏页面的逻辑
+            // window.location.href = "game.html";
+        } */
+    </script>
+</body>
+</html>

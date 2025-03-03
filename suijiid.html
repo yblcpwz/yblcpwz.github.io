@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>随机用户名生成</title>
+  <style>
+    div {
+      margin: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      padding: 5px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <label for="username">用户名:</label>
+    <input type="text" id="username" name="username" placeholder="输入用户名">
+    <button id="randomUsernameBtn">随机生成用户名</button>
+  </div>
+
+  <script>
+    // 随机用户名生成函数
+    function generateRandomUsername() {
+      const adjectives = ['快乐的', '勇敢的', '聪明的', '神秘的', '优雅的'];
+      const nouns = ['熊猫', '狮子', '狐狸', '老虎', '狼'];
+      
+      const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+      
+      return `${randomAdjective}${randomNoun}`;
+    }
+
+    // 获取DOM元素
+    const usernameInput = document.getElementById('username');
+    const randomUsernameBtn = document.getElementById('randomUsernameBtn');
+
+    // 绑定按钮点击事件
+    randomUsernameBtn.addEventListener('click', () => {
+      const randomUsername = generateRandomUsername();
+      usernameInput.value = randomUsername;
+    });
+  </script>
+</body>
+</html>

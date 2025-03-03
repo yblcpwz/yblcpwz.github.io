@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态排行榜</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .rank {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .refresh-button {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .refresh-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>动态排行榜</h1>
+        <table id="leaderboard">
+            <thead>
+                <tr>
+                    <th>排名</th>
+                    <th>名称</th>
+                    <th>得分</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 动态生成排行榜数据 -->
+            </tbody>
+        </table>
+        <button class="refresh-button" onclick="refreshLeaderboard()">刷新排行榜</button>
+        <a href="demo.html">
+            <button>返回</button>
+        </a>
+    </div>
+
+    <script>
+        // 模拟排行榜数据
+        let leaderboardData = [
+            { name: "玩家A", score: 9850 },
+            { name: "玩家B", score: 9720 },
+            { name: "玩家C", score: 9680 },
+            { name: "玩家D", score: 9550 },
+            { name: "玩家E", score: 9430 },
+        ];
+
+        // 渲染排行榜
+        function renderLeaderboard() {
+            const tbody = document.querySelector("#leaderboard tbody");
+            tbody.innerHTML = ""; // 清空现有数据
+
+            // 按得分排序
+            leaderboardData.sort((a, b) => b.score - a.score);
+
+            // 生成表格行
+            leaderboardData.forEach((player, index) => {
+                const row = `<tr>
+                    <td class="rank">${index + 1}</td>
+                    <td>${player.name}</td>
+                    <td>${player.score}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // 刷新排行榜数据
+        function refreshLeaderboard() {
+            // 模拟更新数据（随机增加分数）
+            leaderboardData.forEach(player => {
+                player.score += Math.floor(Math.random() * 100);
+            });
+
+            // 重新渲染排行榜
+            renderLeaderboard();
+        }
+
+        // 初始化页面时渲染排行榜
+        renderLeaderboard();
+
+        // 定时刷新排行榜（每5秒）
+        setInterval(refreshLeaderboard, 5000);
+    </script>
+</body>
+</html>

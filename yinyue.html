@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背景音乐控制</title>
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 基本样式 */
+        body {
+            font-family: Arial, sans-serif;
+            position: relative;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        #music-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        /* 旋转动画 */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .rotate {
+            animation: spin 2s linear infinite; /* 持续旋转 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 音乐控制按钮 -->
+    <div id="music-control">
+        <i class="fas fa-music"></i> <!-- 初始图标 -->
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="background-music" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <script>
+        // 获取元素
+        const musicControl = document.getElementById('music-control');
+        const backgroundMusic = document.getElementById('background-music');
+        const musicIcon = musicControl.querySelector('i');
+
+        // 初始状态  
+        let isPlaying = false;
+
+        // 点击按钮控制音乐
+        musicControl.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundMusic.pause(); // 暂停音乐
+                musicIcon.classList.remove('rotate'); // 停止旋转
+            } else {
+                backgroundMusic.play(); // 播放音乐
+                musicIcon.classList.add('rotate'); // 开始旋转
+            }
+            isPlaying = !isPlaying; // 切换状态
+        });
+
+        // 监听音乐结束事件（可选）
+        backgroundMusic.addEventListener('ended', () => {
+            musicIcon.classList.remove('rotate'); // 停止旋转
+            isPlaying = false;
+        });
+    </script>
+</body>
+</html>

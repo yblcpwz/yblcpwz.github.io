@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排行榜</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 60%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .rank {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .name {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>实时排行榜</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>排名</th>
+                <th class="name">名称</th>
+                <th>得分</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="rank">1</td>
+                <td class="name">玩家A</td>
+                <td>9850</td>
+            </tr>
+            <tr>
+                <td class="rank">2</td>
+                <td class="name">玩家B</td>
+                <td>9720</td>
+            </tr>
+            <tr>
+                <td class="rank">3</td>
+                <td class="name">玩家C</td>
+                <td>9680</td>
+            </tr>
+            <tr>
+                <td class="rank">4</td>
+                <td class="name">玩家D</td>
+                <td>9550</td>
+            </tr>
+            <tr>
+                <td class="rank">5</td>
+                <td class="name">玩家E</td>
+                <td>9430</td>
+            </tr>
+            <tr>
+                <td class="rank">6</td>
+                <td class="name">玩家F</td>
+                <td>9320</td>
+            </tr>
+            <tr>
+                <td class="rank">7</td>
+                <td class="name">玩家G</td>
+                <td>9210</td>
+            </tr>
+            <tr>
+                <td class="rank">8</td>
+                <td class="name">玩家H</td>
+                <td>9100</td>
+            </tr>
+            <tr>
+                <td class="rank">9</td>
+                <td class="name">玩家I</td>
+                <td>8950</td>
+            </tr>
+            <tr>
+                <td class="rank">10</td>
+                <td class="name">玩家J</td>
+                <td>8890</td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        // 模拟动态更新数据
+        function updateLeaderboard() {
+            fetch('/api/leaderboard')  // 从后端获取最新数据
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('tbody');
+                    tbody.innerHTML = '';  // 清空现有数据
+                    data.forEach((item, index) => {
+                        const row = `<tr>
+                            <td class="rank">${index + 1}</td>
+                            <td class="name">${item.name}</td>
+                            <td>${item.score}</td>
+                        </tr>`;
+                        tbody.innerHTML += row;
+                    });
+                });
+        }
+    
+        // 每5秒更新一次
+        setInterval(updateLeaderboard, 5000);
+    </script>
+</body>
+</html>

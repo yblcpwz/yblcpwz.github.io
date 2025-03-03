@@ -1,0 +1,45 @@
+/* 添加图标样式 */
+.status-icon {
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.achievement.unlocked .status-icon::after {
+    content: "✓";
+    color: #00ff00;
+}
+
+.achievement:not(.unlocked) .status-icon::after {
+    content: "🔒";
+    color: #ff4444;
+}
+
+.achievement.unlocked::after {
+    content: " ✓";
+    color: #00ff00;
+}
+
+.achievement.unlocked {
+    filter: none !important;
+    /* 覆盖可能存在的动态样式 */
+}
+
+/* 添加按钮样式 */
+#resetAchievementsButton {
+    padding: 8px 16px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#resetAchievementsButton:hover {
+    background-color: #cc0000;
+}
+
+.lock-icon {
+    color: #ff0000;
+    margin-left: 5px;
+}
