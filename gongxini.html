@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏结束</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .score-display {
+            font-size: 36px;
+            color: #ff5722;
+            margin: 20px 0;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .game-record {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>恭喜</h1>
+        <div class="score-display">您的得分是 <span id="score-display">0</span> 分</div>
+        <div class="buttons">
+            <button onclick="restartGame()">再来一局</button>
+            <button onclick="viewRecord()">游戏记录</button>
+        </div>
+        <div class="game-record">
+            <p>游戏记录：</p>
+            <ul id="record-list">
+                <li>1. 132分</li>
+                <li>2. 120分</li>
+                <li>3. 110分</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // 模拟重新开始游戏
+        function restartGame() {
+            window.location.href="index.html";
+        }
+
+        // 查看游戏记录
+        function viewRecord() {
+            alert("查看游戏记录！");
+            // 这里可以添加查看游戏记录的逻辑
+        }
+        // 页面加载时获取分数并显示
+        window.onload = function () {
+            // 从 localStorage 获取分数
+            const score = localStorage.getItem("gameScore");
+            if (score) {
+                // 将分数显示在指定的块中
+                document.getElementById("score-display").textContent = score;
+            } else {
+                // 如果没有分数，显示提示
+                document.getElementById("score-display").textContent = "无分数记录";
+            }
+        };
+    </script>
+</body>
+</html>

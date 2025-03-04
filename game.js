@@ -417,8 +417,8 @@ function resumeGame() {
 
 // 退出游戏
 function quitGame() {
-    alert("游戏已退出！");
-    window.location.reload(); // 刷新页面重新开始
+    localStorage.setItem("gameScore", score);
+    window.location.href = "gongxini.html"
 }
 
 // 成就检测
@@ -503,7 +503,10 @@ function loadAchievements() {
         localStorage.removeItem('gameAchievements');
     }
 }
-
+/* function endGame(score) {
+    // 保存分数到 localStorage
+    localStorage.setItem("gameScore", score);
+ */
 // 游戏循环
 function gameLoop() {
     if (isPaused) return;
@@ -547,8 +550,9 @@ function gameLoop() {
     drawBasket();
     updateScore();
 
-    if (timeLeft <= 0) {
-        alert(`游戏结束！得分: ${score}`);
+    if (timeLeft <= 0) { 
+        localStorage.setItem("gameScore", score);
+        window.location.href = "gongxini.html"
         return;
     }
 
