@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史得分与成就墙</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #555;
+        }
+        .score-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .score-list li {
+            background: #eee;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .score-list li span {
+            font-weight: bold;
+        }
+        .achievement-wall {
+            margin-top: 20px;
+        }
+        .achievement-wall h2 {
+            color: #555;
+        }
+        .achievement {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background-color: #eee; /* 未解锁时的背景色 */
+            color: transparent; /* 未解锁时文字透明 */
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .achievement.unlocked {
+            background-color: #d4edda; /* 解锁后的背景色 */
+            color: #155724; /* 解锁后的文字颜色 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>历史得分</h1>
+        <ul class="score-list">
+            <li>
+                <span>100分</span>
+                <span>10名</span>
+                <span>2025年4月5日 11:00:34</span>
+            </li>
+            <li>
+                <span>120分</span>
+                <span>5名</span>
+                <span>2025年4月5日 11:12:34</span>
+            </li>
+            <li>
+                <span>20分</span>
+                <span>未上榜</span>
+                <span>2025年4月5日 11:20:34</span>
+            </li>
+        </ul>
+        <div class="achievement-wall">
+            <h2>成就墙</h2>
+            <div class="achievement locked" data-id="1">
+                <span>成就 1：首次游戏</span>
+            </div>
+            <div class="achievement locked" data-id="2">
+                <span>成就 2：得分超过 100 分</span>
+            </div>
+            <div class="achievement locked" data-id="3">
+                <span>成就 3：进入排行榜前 10 名</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟成就解锁状态
+        const achievements = [
+            { id: 1, unlocked: true }, // 成就 1 已解锁
+            { id: 2, unlocked: false }, // 成就 2 未解锁
+            { id: 3, unlocked: true }, // 成就 3 已解锁
+        ];
+
+        // 解锁成就
+        function unlockAchievements() {
+            const achievementElements = document.querySelectorAll(".achievement");
+            achievementElements.forEach((element) => {
+                const achievementId = parseInt(element.getAttribute("data-id"));
+                const achievement = achievements.find((a) => a.id === achievementId);
+                if (achievement && achievement.unlocked) {
+                    element.classList.remove("locked");
+                    element.classList.add("unlocked");
+                }
+            });
+        }
+
+        // 页面加载时解锁成就
+        window.onload = unlockAchievements;
+    </script>
+</body>
+</html>

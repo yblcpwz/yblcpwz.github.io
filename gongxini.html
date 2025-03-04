@@ -14,6 +14,30 @@
             height: 100vh;
             margin: 0;
         }
+        .achievement-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .achievement-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+        .achievement-content h2 {
+            margin-top: 0;
+        }
+        .achievement-content p {
+            margin: 10px 0;
+        }
         .container {
             background-color: #fff;
             padding: 20px;
@@ -73,7 +97,11 @@
                 <li>3. 110分</li>
             </ul>
         </div>
-    </div>
+        <div class="achievement-popup" id="achievementPopup">
+            <div class="achievement-content">
+                <div id="chengjiu"></div>
+            </div>
+        </div>
     <script>
         // 模拟重新开始游戏
         function restartGame() {
@@ -96,7 +124,52 @@
                 // 如果没有分数，显示提示
                 document.getElementById("score-display").textContent = "无分数记录";
             }
+  const achievement = JSON.parse(localStorage.getItem("gameAchievements"));
+    if (achievement) {
+        document.getElementById("chengjiu").textContent = achievement.A;
+        // 显示成就弹窗
+        /* document.getElementById("achievementName").textContent = achievement.name;
+        document.getElementById("achievementDescription").textContent = achievement.description;
+        document.getElementById("achievementMessage").textContent = achievement.message;
+        document.getElementById("achievementPopup").style.display = "flex"; */
+
+    // 清除 localStorage 中的成就信息
+    localStorage.removeItem("gameAchievements");
+}
         };
+            
+
+       /*  let currentAchievementIndex = 0; 
+        // 显示下一个成就
+        function showNextAchievement() {
+            const popup = document.getElementById('achievementPopup');
+            const content = popup.querySelector('.achievement-content');
+
+            if (currentAchievementIndex < achievements.length) {
+                const achievement = achievements[currentAchievementIndex];
+                content.innerHTML = `
+                    <h2>隐藏成就解锁！</h2>
+                    <p>${achievement.title}</p>
+                    <p>${achievement.description}</p>
+                    <p>${achievement.hint}</p>
+                `;
+                popup.style.display = 'flex';
+                currentAchievementIndex++;
+            } else {
+                popup.style.display = 'none'; // 所有成就显示完毕
+            }
+        } 
+
+        // 模拟游戏结束后触发成就解锁
+        window.onload = function () {
+            setTimeout(showNextAchievement, 300); // 0秒后显示第一个成就
+        };
+
+        // 点击屏幕关闭当前成就并显示下一个成就
+        document.getElementById('achievementPopup').addEventListener('click', function () {
+            this.style.display = 'none'; // 关闭当前成就
+            setTimeout(showNextAchievement, 300); // 延迟500ms显示下一个成就
+        }); */
     </script>
 </body>
 </html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏结束</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .end-page {
+            text-align: center;
+        }
+        .achievement-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .achievement-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+        .achievement-content h2 {
+            margin-top: 0;
+        }
+        .achievement-content p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="end-page">
+        <h1>游戏结束</h1>
+        <p>您的得分是: 120分</p >
+        <p>再来一局</p >
+    </div>
+
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-content">
+            <h2>隐藏成就解锁！</h2>
+            <p id="achievementName"></p >
+            <p id="achievementDescription"></p >
+            <p id="achievementMessage"></p >
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时检查是否有成就解锁
+        window.onload = function () {
+            const achievement = JSON.parse(localStorage.getItem("unlockedAchievement"));
+
+            if (achievement) {
+                // 显示成就弹窗
+                document.getElementById("achievementName").textContent = achievement.name;
+                document.getElementById("achievementDescription").textContent = achievement.description;
+                document.getElementById("achievementMessage").textContent = achievement.message;
+                document.getElementById("achievementPopup").style.display = "flex";
+
+                // 清除 localStorage 中的成就信息
+                localStorage.removeItem("unlockedAchievement");
+            }
+        };
+
+        // 点击屏幕关闭成就弹窗
+        document.getElementById("achievementPopup").addEventListener("click", function () {
+            this.style.display = "none";
+        });
+    </script>
+</body>
+</html>

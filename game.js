@@ -424,7 +424,7 @@ function quitGame() {
 // 成就检测
 function checkAchievements() {
     // A: 取得胜利
-    if (!achievements.A && score >= 130 && timeLeft < 0.25) {
+    if (!achievements.A && score >= 1 ) {     //&& timeLeft < 0.25 我在这里出了一些问题
         unlockAchievement('A');
     }
     

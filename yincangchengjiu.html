@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏结束页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .end-page {
+            text-align: center;
+        }
+        .achievement-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .achievement-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+        }
+        .achievement-content h2 {
+            margin-top: 0;
+        }
+        .achievement-content p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="end-page">
+        <h1>游戏结束</h1>
+        <p>您的得分是: 120分</p >
+        <p>再来一局</p >
+    </div>
+
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-content">
+            <h2>隐藏成就解锁！</h2>
+            <p>冰冻达人</p >
+            <p>恭喜你接住了所有的冰块</p >
+            <p>你一定很喜欢清凉吧</p >
+        </div>
+    </div>
+
+    <script>
+        // 模拟游戏结束后触发成就解锁
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('achievementPopup').style.display = 'flex';
+            }, 1000); // 1秒后显示成就弹窗
+        };
+
+        // 点击屏幕关闭成就弹窗
+        document.getElementById('achievementPopup').addEventListener('click', function() {
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

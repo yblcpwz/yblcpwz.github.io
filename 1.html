@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏页面</title>
+</head>
+<body>
+    <h1>游戏进行中...</h1>
+    <button onclick="unlockAchievement()">模拟解锁成就</button>
+    <script>
+        function unlockAchievement() {
+            // 模拟解锁成就
+            const achievement = {
+                name: "冰冻达人",
+                description: "恭喜你接住了所有的冰块",
+                message: "你一定很喜欢清凉吧"
+            };
+
+            // 将成就信息存储到 localStorage
+            localStorage.setItem("unlockedAchievement", JSON.stringify(achievement));
+
+            // 跳转到结束页面
+            window.location.href = "end-page.html";
+        }
+    </script>
+</body>
+</html>
