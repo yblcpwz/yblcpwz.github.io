@@ -14,30 +14,65 @@
             height: 100vh;
             margin: 0;
         }
-        .achievement-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-        }
-        .achievement-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            width: 300px;
-        }
-        .achievement-content h2 {
-            margin-top: 0;
-        }
-        .achievement-content p {
-            margin: 10px 0;
-        }
+/* 弹窗样式 */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+}
+
+/* 按钮样式 */
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+/* 动画效果 */
+.popup {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.popup.show {
+  display: flex;
+  opacity: 1;
+}
+
+#close-popup {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
         .container {
             background-color: #fff;
             padding: 20px;
@@ -97,11 +132,14 @@
                 <li>3. 110分</li>
             </ul>
         </div>
-        <div class="achievement-popup" id="achievementPopup">
-            <div class="achievement-content">
-                <div id="chengjiu"></div>
-            </div>
-        </div>
+        <!-- 成就弹窗 -->
+  <div id="achievement-popup" class="popup">
+    <div class="popup-content">
+      <h2>恭喜</h2>
+      <h3 id="achievement-title">成就名称</h3>
+      <p id="achievement-description">成就描述</p >
+    </div>
+  </div>
     <script>
         // 模拟重新开始游戏
         function restartGame() {
@@ -114,6 +152,55 @@
             // 这里可以添加查看游戏记录的逻辑
         }
         // 页面加载时获取分数并显示
+        function showAchievementPopup(achievement) {
+    const popup = document.getElementById('achievement-popup');
+    const achievementTitle = document.getElementById('achievement-title');
+    const achievementDescription = document.getElementById('achievement-description');
+
+    // 更新弹窗内容
+    achievementTitle.textContent = achievement.name;
+    achievementDescription.textContent = achievement.description;
+
+    // 显示弹窗
+    popup.classList.add('show');
+}
+
+// 逐个显示成就的函数
+let currentIndex = 0;
+
+function showNextAchievement(achievements) {
+    if (currentIndex >= achievements.length) return; // 所有成就显示完毕，退出递归
+
+    // 显示当前成就
+    showAchievementPopup(achievements[currentIndex]);
+
+    // 单击屏幕显示下一个成就
+    const popup = document.getElementById('achievement-popup');
+    popup.onclick = () => {
+        popup.classList.remove('show'); // 关闭当前弹窗
+        currentIndex++; // 增加索引
+        showNextAchievement(achievements); // 显示下一个成就
+    };
+}
+    // 成就名称和描述的映射
+const achievementMap = {
+    A: { name: '冰冻达人', description: '恭喜你接住了所有的冰块' },
+    B: { name: '速度之王', description: '在 10 秒内完成游戏' },
+    C: { name: '无尽挑战', description: '连续完成 10 次游戏' },
+    D: { name: '大户人家', description: '碰到十次炸弹仍然胜利' },
+    E: { name: '成就E', description: '成就E的描述' },
+};
+
+// 将布尔变量转换为成就列表
+function getUnlockedAchievements(achievements) {
+    const unlockedAchievements = [];
+    for (const key in achievements) {
+        if (achievements[key] && achievementMap[key]) {
+            unlockedAchievements.push(achievementMap[key]);
+        }
+    }
+    return unlockedAchievements;
+}
         window.onload = function () {
             // 从 localStorage 获取分数
             const score = localStorage.getItem("gameScore");
@@ -124,52 +211,24 @@
                 // 如果没有分数，显示提示
                 document.getElementById("score-display").textContent = "无分数记录";
             }
-  const achievement = JSON.parse(localStorage.getItem("gameAchievements"));
-    if (achievement) {
-        document.getElementById("chengjiu").textContent = achievement.A;
-        // 显示成就弹窗
-        /* document.getElementById("achievementName").textContent = achievement.name;
-        document.getElementById("achievementDescription").textContent = achievement.description;
-        document.getElementById("achievementMessage").textContent = achievement.message;
-        document.getElementById("achievementPopup").style.display = "flex"; */
+  const achievements = JSON.parse(localStorage.getItem("achievements"));
+  if (achievements) {
+        const unlockedAchievements = getUnlockedAchievements(achievements);
+        console.log("Unlocked Achievements:", unlockedAchievements);
+        if (unlockedAchievements.length > 0) {
+            showNextAchievement(unlockedAchievements);
+        }
+    }
 
     // 清除 localStorage 中的成就信息
-    localStorage.removeItem("gameAchievements");
-}
-        };
-            
+    localStorage.removeItem("achievements");     
+    // 显示成就弹窗的函数
 
-       /*  let currentAchievementIndex = 0; 
-        // 显示下一个成就
-        function showNextAchievement() {
-            const popup = document.getElementById('achievementPopup');
-            const content = popup.querySelector('.achievement-content');
+};
 
-            if (currentAchievementIndex < achievements.length) {
-                const achievement = achievements[currentAchievementIndex];
-                content.innerHTML = `
-                    <h2>隐藏成就解锁！</h2>
-                    <p>${achievement.title}</p>
-                    <p>${achievement.description}</p>
-                    <p>${achievement.hint}</p>
-                `;
-                popup.style.display = 'flex';
-                currentAchievementIndex++;
-            } else {
-                popup.style.display = 'none'; // 所有成就显示完毕
-            }
-        } 
 
-        // 模拟游戏结束后触发成就解锁
-        window.onload = function () {
-            setTimeout(showNextAchievement, 300); // 0秒后显示第一个成就
-        };
 
-        // 点击屏幕关闭当前成就并显示下一个成就
-        document.getElementById('achievementPopup').addEventListener('click', function () {
-            this.style.display = 'none'; // 关闭当前成就
-            setTimeout(showNextAchievement, 300); // 延迟500ms显示下一个成就
-        }); */
+        
     </script>
 </body>
 </html>

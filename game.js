@@ -58,7 +58,7 @@ let bombSpawnChance = 0; // 炸弹生成概率（初始为0）
 let bombCatchTimes = 0; // 接到炸弹的次数
 
 // 成就状态变量
-let achievements = {
+const achievements = {
     A: false,   // 野路子——分数130+ 胜利
     B: false,   // Alter the future / 时间赛跑者——接住所有秒表
     C: false,   // 接住天大鹅——接住所有六只鹅
@@ -424,7 +424,7 @@ function quitGame() {
 // 成就检测
 function checkAchievements() {
     // A: 取得胜利
-    if (!achievements.A && score >= 1 ) {     //&& timeLeft < 0.25 我在这里出了一些问题
+    if (!achievements.A && score >= 130 ) {     //&& timeLeft < 0.25 我在这里出了一些问题
         unlockAchievement('A');
     }
     
@@ -439,7 +439,7 @@ function checkAchievements() {
     }
     
     // D: 大户人家
-    if (!achievements.D && score >= 130 && timeLeft < 0.25 && bombCatchTimes >= 5) {
+    if (!achievements.D && score >= 10 &&  bombCatchTimes >= 1) {  //timeLeft < 0.25
         unlockAchievement('D');
     }
 
@@ -467,7 +467,7 @@ function unlockAchievement(type) {
 // 保存成就
 function saveAchievements() {
     try {
-        localStorage.setItem('gameAchievements', JSON.stringify(achievements));
+        localStorage.setItem('achievements', JSON.stringify(achievements));
     } catch (e) {
         console.error("保存成就失败:", e);
     }
