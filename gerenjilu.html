@@ -39,24 +39,26 @@
         .score-list li span {
             font-weight: bold;
         }
-        .achievement-wall {
-            margin-top: 20px;
-        }
-        .achievement-wall h2 {
-            color: #555;
-        }
         .achievement {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 4px;
-            background-color: #eee; /* 未解锁时的背景色 */
-            color: transparent; /* 未解锁时文字透明 */
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .achievement.unlocked {
-            background-color: #d4edda; /* 解锁后的背景色 */
-            color: #155724; /* 解锁后的文字颜色 */
-        }
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+        .locked {
+    background-color: #ccc;
+    opacity: 0.6;
+    cursor: not-allowed;
+    color: transparent; /* 隐藏文字 */
+}
+
+.unlocked {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
     </style>
 </head>
 <body>
@@ -79,43 +81,68 @@
                 <span>2025年4月5日 11:20:34</span>
             </li>
         </ul>
-        <div class="achievement-wall">
+        <div data-name="A" class="achievement locked">野路子：达到-100分取得胜利</div>
+        <div data-name="B" class="achievement locked">Alter the future：接住所有秒表</div>
+        <div data-name="C" class="achievement locked">接住天大鹅：接住所有六只鹅</div>
+        <div data-name="D" class="achievement locked">大户人家——碰到十次炸弹仍然胜利</div>
+        <div data-name="E" class="achievement locked">冰冻达人——冰冻时间达到33秒</div>
+        <!-- <div class="achievement-wall">
             <h2>成就墙</h2>
-            <div class="achievement locked" data-id="1">
+            <div class="achievement locked" id="A">
                 <span>成就 1：首次游戏</span>
             </div>
-            <div class="achievement locked" data-id="2">
+            <div class="achievement locked" id="B">
                 <span>成就 2：得分超过 100 分</span>
             </div>
-            <div class="achievement locked" data-id="3">
+            <div class="achievement locked" id="C">
                 <span>成就 3：进入排行榜前 10 名</span>
             </div>
-        </div>
+        </div> -->
+        <a href="demo3.html">
+            <button>返回</button>
+        </a>
     </div>
 
     <script>
         // 模拟成就解锁状态
-        const achievements = [
+        /* const achievements = [
             { id: 1, unlocked: true }, // 成就 1 已解锁
             { id: 2, unlocked: false }, // 成就 2 未解锁
             { id: 3, unlocked: true }, // 成就 3 已解锁
-        ];
+        ]; */
 
-        // 解锁成就
-        function unlockAchievements() {
-            const achievementElements = document.querySelectorAll(".achievement");
-            achievementElements.forEach((element) => {
-                const achievementId = parseInt(element.getAttribute("data-id"));
-                const achievement = achievements.find((a) => a.id === achievementId);
-                if (achievement && achievement.unlocked) {
-                    element.classList.remove("locked");
-                    element.classList.add("unlocked");
-                }
-            });
+        // 读取成就状态
+        const achievements = JSON.parse(localStorage.getItem("achievements")) ;
+// 解锁成就的函数
+function unlockAchieve() {
+    // 获取所有成就元素
+    const achievementElements = document.querySelectorAll(".achievement");
+    
+    // 遍历每个成就元素
+    achievementElements.forEach((element) => {
+        // 获取成就的名称（A, B, C, D, E）
+        const achievementName = element.getAttribute("data-name");
+        
+        // 从 achievements 对象中读取对应的布尔值
+        const isUnlocked = achievements[achievementName];
+        
+        // 如果成就已解锁
+        if (isUnlocked) {
+            // 移除 "locked" 类
+            element.classList.remove("locked");
+            // 添加 "unlocked" 类
+            element.classList.add("unlocked");
         }
+    });
+}
 
-        // 页面加载时解锁成就
-        window.onload = unlockAchievements;
+// 页面加载时解锁成就
+window.onload = function () {
+
+    unlockAchieve();
+};
+ // 清除 localStorage 中的成就信息
+ localStorage.removeItem("achievements");     
     </script>
 </body>
 </html>

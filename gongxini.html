@@ -148,7 +148,7 @@ button:hover {
 
         // 查看游戏记录
         function viewRecord() {
-            alert("查看游戏记录！");
+            window.location.href = "gerenjilu.html";
             // 这里可以添加查看游戏记录的逻辑
         }
         // 页面加载时获取分数并显示
@@ -220,8 +220,7 @@ function getUnlockedAchievements(achievements) {
         }
     }
 
-    // 清除 localStorage 中的成就信息
-    localStorage.removeItem("achievements");     
+   
     // 显示成就弹窗的函数
 
 };
