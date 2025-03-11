@@ -9,6 +9,11 @@
         body {
             margin: 0;
             overflow: hidden;
+            background-image: url("assets/images/background.png");  /* 背景图片路径 */
+            background-size: 300px 600px;  /* 背景图片覆盖整个容器 */
+            background-position: left;  /* 背景图片居左 */
+            position: relative;  /* 相对定位 */
+            background-repeat: no-repeat;
         }
 
         canvas {
@@ -75,14 +80,14 @@
     <script src="game.js"></script>
 
     <!-- 在body内添加成就面板 -->
-<div id="achievementPanel">
+<!-- <div id="achievementPanel">
     <h3>成就系统</h3>
     <div class="achievement" data-type="A">野路子：达到-100分取得胜利 <span class="locked">🔒</span></div>
     <div class="achievement" data-type="B">Alter the future：接住所有秒表 <span class="locked">🔒</span></div>
     <div class="achievement" data-type="C">接住天大鹅：接住所有六只鹅 <span class="locked">🔒</span></div>
     <div class="achievement" data-type="D">大户人家——碰到十次炸弹仍然胜利 <span class="locked">🔒</span></div>
     <div class="achievement" data-type="E">冰冻达人——冰冻时间达到33秒 <span class="locked">🔒</span></div>
-</div>
+</div> -->
 
 <!-- 在HTML成就界面添加按钮 -->
 <!--<div class="achievement-controls">
