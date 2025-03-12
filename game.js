@@ -4,14 +4,12 @@ const ctx = canvas.getContext("2d");
 let score = 0; // 初始得分
 let timeLeft = 60; // 60秒
 
-// 游戏状态变量（框子）
-const basketWidth = 100;
-const basketHeight = 60;
-
 // 框子属性
-const originalBasketSpeed = 0.18; // 移动速度系数（0~1，值越大移动越快）
-let targetBasketX = (canvas.width - basketWidth) / 2; // 目标位置
-let basketX = targetBasketX; // 当前实际位置
+const originalBasketSpeed = 0.24; // 移动速度系数（0~1，值越大移动越快）
+let targetBasketX = 0; // 目标位置
+let basketX = 0; // 当前实际位置
+let basketWidth = 100;
+let basketHeight = 60;
 
 // 篮子帧图片
 const basketFrames = [
@@ -56,12 +54,12 @@ let pauseDuration = 0;
 let pauseTotal = 0;
 
 // 游戏状态变量（生成机制）
-let initialSpawnInterval = 1000; // 初始生成间隔（1秒）
-let normalSpawnInterval = 500; // 正常生成间隔（0.5秒）
+let initialSpawnInterval = 1200; // 初始生成间隔（1秒）
+let normalSpawnInterval = 600; // 正常生成间隔（0.5秒）
 let isInitialPhase = true; // 是否处于初始阶段（前10秒）
 let bombSpawnChance = 0; // 炸弹生成概率（初始为0）
 let bombCatchTimes = 0; // 接到炸弹的次数
-
+const baseSpeed = window.innerHeight / 400;  // 根据屏幕高度调整基础速度
 // 成就状态变量
 const achievements = {
   A: false, // 野路子——分数130+ 胜利
@@ -83,6 +81,14 @@ const unitTypes = [
   { type: "ice", image: "assets/images/ice.png", speed: 3, score: -3, effect: "slow" },
 ];
 
+function initCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  basketWidth = canvas.width * 0.2; // 根据屏幕宽度动态调整篮子大小
+  basketHeight = basketWidth * 0.6; 
+  targetBasketX = (canvas.width - basketWidth) / 2;
+  basketX = targetBasketX;   
+}
 // 加载篮子帧图片
 function loadBasketFrames() {
   return Promise.all(
@@ -170,14 +176,14 @@ function createUnit() {
 
   // 动态调整炸弹生成概率
   if (currentGameTime >= 15 && currentGameTime < 30) {
-    bombSpawnChance = 0.15; // 15-30秒生成概率为0.15
+    bombSpawnChance = 0.10; // 15-30秒生成概率为0.15
   } else if (currentGameTime >= 30) {
-    bombSpawnChance = 0.3; // 30秒后生成概率为0.30
+    bombSpawnChance = 0.2; // 30秒后生成概率为0.30
   }
 
   if (watchsituation && Math.random() < 0.1) {
     const unitType = unitTypes.find((u) => u.type === "watch");
-    const x = Math.random() * (canvas.width - 100);
+    const x = Math.random() * (canvas.width - 100)+50;
     const y = 0;
     const unit = {
       type: unitType.type,
@@ -198,7 +204,7 @@ function createUnit() {
 
   if (cakesituation && Math.random() < 0.1) {
     const unitType = unitTypes.find((u) => u.type === "cake");
-    const x = Math.random() * (canvas.width - 100);
+    const x = Math.random() * (canvas.width - 100)+50;
     const y = 0;
     const unit = {
       type: unitType.type,
@@ -221,7 +227,7 @@ function createUnit() {
   // 生成炸弹的逻辑
   if (currentGameTime >= 15 && Math.random() < bombSpawnChance) {
     const unitType = unitTypes.find((u) => u.type === "bomb");
-    const x = Math.random() * (canvas.width - 100);
+    const x = Math.random() * (canvas.width - 100)+50;
     const y = 0;
     const unit = {
       type: unitType.type,
@@ -240,7 +246,7 @@ function createUnit() {
 
   if (currentGameTime >= 15 && Math.random() < bombSpawnChance) {
     const unitType = unitTypes.find((u) => u.type === "ice");
-    const x = Math.random() * (canvas.width - 100);
+    const x = Math.random() * (canvas.width - 100)+50;
     const y = 0;
     const unit = {
       type: unitType.type,
@@ -283,12 +289,12 @@ function updateUnits() {
     if (!unit.loaded) continue;
 
     unit.y += unit.speed; // 下落（更新Y）
-
+    const detectionOffset = canvas.width * 0.05; // 动态碰撞区域
     // 检测是否被框子接住
     if (
       unit.y + 50 >= canvas.height - basketHeight &&
-      unit.x + 50 >= basketX &&
-      unit.x <= basketX + basketWidth
+      unit.x + detectionOffset >= basketX &&
+      unit.x <= basketX + basketWidth + detectionOffset
     ) {
       // 炸弹处理逻辑
       if (unit.type === "bomb") {
@@ -586,11 +592,28 @@ canvas.addEventListener("mousemove", (event) => {
   targetBasketX = Math.max(0, Math.min(mouseX - basketWidth / 2, canvas.width - basketWidth));
 });
 
+// 替换原有鼠标事件为触摸事件
+canvas.addEventListener("touchstart", handleTouch);
+canvas.addEventListener("touchmove", handleTouch);
+
+function handleTouch(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const touchX = touch.clientX - rect.left;
+    targetBasketX = Math.max(0, Math.min(touchX - basketWidth/2, canvas.width - basketWidth));
+}
 // 页面不可见时自动暂停
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     pauseGame();
   }
+});
+
+// 添加窗口resize事件
+window.addEventListener('resize', () => {
+  initCanvas();
+  targetBasketX = Math.max(0, Math.min(targetBasketX, canvas.width - basketWidth));
 });
 
 // 绑定按钮事件
@@ -602,6 +625,18 @@ document.addEventListener("DOMContentLoaded", function () {
   loadAchievements();
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById("toggleAchievements").addEventListener("click", function() {
+      const panel = document.getElementById("achievementPanel");
+      panel.classList.toggle("collapsed");
+      
+      // 强制重绘解决过渡问题
+      void panel.offsetWidth;
+      
+      // 更新箭头方向
+      this.textContent = panel.classList.contains("collapsed") ? "▲" : "▼";
+  });
+});
 function startGame() {
   loadAchievements(); // 加载成就
   loadBasketFrames().then(() => {

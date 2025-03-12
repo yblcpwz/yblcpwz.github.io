@@ -43,3 +43,74 @@
     color: #ff0000;
     margin-left: 5px;
 }
+
+/* 响应式成就系统 */
+#achievementPanel {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 85%;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#achievementPanel.collapsed {
+    width: auto !important;
+    /* 取消固定宽度 */
+    height: 40px !important;
+    /* 仅保留标题栏高度 */
+    padding: 5px 10px !important;
+}
+
+#achievementPanel.collapsed .achievement-list {
+    display: none;
+    /* 直接隐藏列表 */
+}
+
+#achievementPanel #toggleAchievements {
+    transition: transform 0.3s;
+    transform: rotate(0deg);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#toggleAchievements {
+    background: none;
+    border: none;
+    font-size: 20px;
+    padding: 5px;
+    margin-left: 10px;
+    transform: rotate(0deg);
+    transition: transform 0.3s;
+}
+
+#achievementPanel.collapsed #toggleAchievements {
+    transform: rotate(180deg);
+}
+
+.achievement-list {
+    display: block;
+}
+
+@media (max-width: 480px) {
+    #achievementPanel {
+        font-size: 12px;
+    }
+
+    .achievement {
+        margin: 5px 0;
+    }
+}
+
+CSS 防止默认触摸行为
+canvas {
+    touch-action: none;
+}
