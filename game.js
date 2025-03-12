@@ -638,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 function startGame() {
+  initCanvas();
   loadAchievements(); // 加载成就
   loadBasketFrames().then(() => {
     console.log("篮子帧图片加载完成");
