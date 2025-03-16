@@ -13,7 +13,7 @@ let basketHeight = 60;
 
 // 篮子帧图片
 const basketFrames = [
-  "assets/images/frame1.png",
+  "assets/images/frame1.png", 
   "assets/images/frame2.png",
   "assets/images/frame3.png",
 ];
@@ -73,19 +73,19 @@ let units = []; // 存储所有单位
 
 // 单位类型和得分规则
 const unitTypes = [
-  { type: "petal", image: "assets/images/petal.png", speed: 1.5, score: 1, effect: "" },
-  { type: "flower", image: "assets/images/flower.png", speed: 2.5, score: 4, effect: "" },
-  { type: "bomb", image: "assets/images/bomb.png", speed: 3, score: -10, effect: "" },
-  { type: "cake", image: "assets/images/cake.png", speed: 3.5, score: 4, effect: "shield" },
-  { type: "watch", image: "assets/images/watch.png", speed: 3.5, score: 0, effect: "time" },
-  { type: "ice", image: "assets/images/ice.png", speed: 3, score: -3, effect: "slow" },
+    { type: "petal", image: "assets/images/petal.png", speed: 1.5 * baseSpeed, score: 2, effect:""},
+    { type: "flower", image: "assets/images/flower.png", speed: 2.5 * baseSpeed, score: 4, effect:""},
+    { type: "bomb", image: "assets/images/bomb.png", speed: 3 * baseSpeed, score: -10, effect: ""},
+    { type: "cake", image: "assets/images/cake.png", speed: 3.5 * baseSpeed, score: 4, effect: "shield" }, 
+    { type: "watch", image: "assets/images/watch.png", speed: 3.5 * baseSpeed, score: 0, effect: "time", },
+    { type: "ice", image: "assets/images/ice.png", speed: 3 * baseSpeed, score: -3, effect: "slow", },
 ];
 
 function initCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   basketWidth = canvas.width * 0.2; // 根据屏幕宽度动态调整篮子大小
-  basketHeight = basketWidth * 0.6; 
+  basketHeight = basketWidth; 
   targetBasketX = (canvas.width - basketWidth) / 2;
   basketX = targetBasketX;   
 }
@@ -450,8 +450,7 @@ function quitGame() {
 // 成就检测
 function checkAchievements() {
   // A: 取得胜利
-  if (!achievements.A && score <= -100 && timeLeft <= 0) {
-    //&& timeLeft < 0.25 我在这里出了一些问题
+  if (!achievements.A && score >= 100 && timeLeft <= 0.25) {
     unlockAchievement("A");
   }
 
@@ -614,6 +613,12 @@ document.addEventListener("visibilitychange", () => {
 window.addEventListener('resize', () => {
   initCanvas();
   targetBasketX = Math.max(0, Math.min(targetBasketX, canvas.width - basketWidth));
+});
+
+// 添加窗口resize事件
+window.addEventListener('resize', () => {
+    initCanvas();
+    targetBasketX = Math.max(0, Math.min(targetBasketX, canvas.width - basketWidth));
 });
 
 // 绑定按钮事件
