@@ -16,11 +16,12 @@ const basketFrames = [
   "assets/images/frame1.png", 
   "assets/images/frame2.png",
   "assets/images/frame3.png",
+  "assets/images/frame4.png"
 ];
 const basketImages = []; // 存储加载后的帧图片
 let currentBasketFrame = 0; // 当前帧索引
 let lastFrameTime = 0; // 上一次切换帧的时间
-const frameRate = 100; // 帧率（每 100ms 切换一帧）
+const frameRate = 150; // 帧率（每 100ms 切换一帧）
 
 // 游戏状态变量（时间同步）
 let gameTime = 0;

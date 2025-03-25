@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>历史得分与成就墙</title>
     <style>
         body {
@@ -59,6 +60,26 @@
     color: white;
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
+#music-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        /* 旋转动画 */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .rotate {
+            animation: spin 2s linear infinite; /* 持续旋转 */
+        }
     </style>
 </head>
 <body>
@@ -81,7 +102,7 @@
                 <span>2025年4月5日 11:20:34</span>
             </li>
         </ul>
-        <div data-name="A" class="achievement locked">野路子：达到-100分取得胜利</div>
+        <div data-name="A" class="achievement locked">野路子：达到100分取得胜利</div>
         <div data-name="B" class="achievement locked">Alter the future：接住所有秒表</div>
         <div data-name="C" class="achievement locked">接住天大鹅：接住所有六只鹅</div>
         <div data-name="D" class="achievement locked">大户人家——碰到十次炸弹仍然胜利</div>
@@ -102,7 +123,16 @@
             <button>返回</button>
         </a>
     </div>
+     <!-- 音乐控制按钮 -->
+  <div id="music-control">
+    <i class="fas fa-music"></i> <!-- 初始图标 -->
+</div>
 
+<!-- 背景音乐 -->
+<audio id="background-music" loop>
+    <source src="background-music.mp3" type="audio/mpeg">
+    您的浏览器不支持音频播放。
+</audio>
     <script>
         // 模拟成就解锁状态
         /* const achievements = [
@@ -142,7 +172,32 @@ window.onload = function () {
     unlockAchieve();
 };
  // 清除 localStorage 中的成就信息
- localStorage.removeItem("achievements");     
+ localStorage.removeItem("achievements");    
+ // 获取元素
+ const musicControl = document.getElementById('music-control');
+        const backgroundMusic = document.getElementById('background-music');
+        const musicIcon = musicControl.querySelector('i');
+
+        // 初始状态  
+        let isPlaying = false;
+
+        // 点击按钮控制音乐
+        musicControl.addEventListener('click', () => {
+            if (isPlaying) {
+                backgroundMusic.pause(); // 暂停音乐
+                musicIcon.classList.remove('rotate'); // 停止旋转
+            } else {
+                backgroundMusic.play(); // 播放音乐
+                musicIcon.classList.add('rotate'); // 开始旋转
+            }
+            isPlaying = !isPlaying; // 切换状态
+        });
+
+        // 监听音乐结束事件（可选）
+        backgroundMusic.addEventListener('ended', () => {
+            musicIcon.classList.remove('rotate'); // 停止旋转
+            isPlaying = false;
+        }); 
     </script>
 </body>
 </html>

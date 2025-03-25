@@ -124,27 +124,77 @@
             musicIcon.classList.remove('rotate'); // 停止旋转
             isPlaying = false;
         });
+        // 生成随机用户名
+// 直接定义一个完整的用户名集合
+function generateRandomUsername() {
+  const usernames = [
+    // 动物系列
+    '闪电豹', '星空鲸', '钢铁熊猫', '量子狐狸', '蒸汽朋克狼',
+    '赛博狮子', '魔法猫咪', '星际仓鼠', '像素恐龙', '彩虹独角兽',
+    
+    // 食物系列
+    '芝士火锅侠', '芒果布丁', '量子咖啡', '太空拉面', '像素寿司',
+    '巧克力陨石', '星际奶茶', '代码蛋糕', '二进制饼干', 'AI冰淇淋',
+    
+    // 科技系列
+    '赛博忍者', '量子巫师', 'AI吟游诗人', '区块链骑士', '元宇宙园丁',
+    '神经网络侠', '算法魔法师', '数据炼金师', '云端牧羊人', '硅基诗人',
+    
+    // 奇幻系列
+    '时间旅者', '空间漫游者', '梦境侦探', '记忆海盗', '星光吟唱者',
+    '影子舞者', '迷雾行者', '星辰图书管理员', '黄昏守望者', '黎明预言家',
+    
+    // 混搭系列
+    '会编程的猫', '爱吃披萨的AI', '跳舞的机器人', '写诗的计算机', '冲浪的宇航员',
+    '弹吉他的外星人', '下棋的恐龙', '喝咖啡的超级英雄', '玩滑板的巫师', '写代码的魔法师',
+    
+    // 中文创意
+    '墨染清风', '星河入梦', '指尖流光', '云端漫步', '代码如诗',
+    '二进制诗人', '硅基生命体', '量子观察者', '数据之海', '像素江湖'
+  ];
+  
+  return usernames[Math.floor(Math.random() * usernames.length)];
+}
 
+// 获取DOM元素
+const usernameInput = document.getElementById('username');
+const randomUsernameBtn = document.getElementById('randomUsernameBtn');
 
-    function generateRandomUsername() {
-      const adjectives = ['快乐的', '勇敢的', '聪明的', '神秘的', '优雅的'];
-      const nouns = ['熊猫', '狮子', '狐狸', '老虎', '狼'];
-      
-      const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
-      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
-      
-      return `${randomAdjective}${randomNoun}`;
+// 绑定按钮点击事件
+randomUsernameBtn.addEventListener('click', () => {
+  const randomUsername = generateRandomUsername();
+  usernameInput.value = randomUsername;
+});
+
+// 确认按钮点击事件
+document.getElementById('queren').addEventListener('click', (e) => {
+  e.preventDefault(); // 阻止表单默认提交行为
+  const username = document.getElementById('username').value;
+  
+  if (!username) {
+    alert('请输入用户名!');
+    return;
+  }
+  
+  fetch(`http://192.168.128.1:8080/grecords?user=${encodeURIComponent(username)}`, {
+    method: 'GET'
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-
-    // 获取DOM元素
-    const usernameInput = document.getElementById('username');
-    const randomUsernameBtn = document.getElementById('randomUsernameBtn');
-
-    // 绑定按钮点击事件
-    randomUsernameBtn.addEventListener('click', () => {
-      const randomUsername = generateRandomUsername();
-      usernameInput.value = randomUsername;
-    });
+    return response.json();
+  })
+  .then(data => {
+    console.log('服务器响应:', data);
+    // 只有在成功后才跳转页面
+    window.location.href = 'demo.html';
+  })
+  .catch(error => {
+    console.error('错误:', error);
+    alert('请求失败: ' + error.message);
+  });
+});
     </script>
 </body>
 </html>
