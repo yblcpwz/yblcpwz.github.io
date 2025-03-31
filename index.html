@@ -84,9 +84,9 @@
            </div>
           
     </div>
-    <a href="demo.html">
-        <button id="queren" onclick="login()">确认</button>
-      </a>
+    
+        <button id="queren" >确认</button>
+      
     </div>
      <!-- 音乐控制按钮 -->
      <div id="music-control">
@@ -165,36 +165,71 @@ randomUsernameBtn.addEventListener('click', () => {
   const randomUsername = generateRandomUsername();
   usernameInput.value = randomUsername;
 });
+document.getElementById('queren').addEventListener('click', async () => {
+            const username = document.getElementById('username').value.trim();
+            const errorElement = document.getElementById('error');
+            localStorage.setItem('username', username);
+            
+            if (!username) {
+                errorElement.textContent = '用户名不能为空！';
+                return;
+            }
 
-// 确认按钮点击事件
-document.getElementById('queren').addEventListener('click', (e) => {
-  e.preventDefault(); // 阻止表单默认提交行为
-  const username = document.getElementById('username').value;
+            try {
+                const response = await fetch('http://qf9y3g.natappfree.cc/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', // 声明发送 JSON 数据
+                    },
+                    body: JSON.stringify({ userName: username }), // 传递 JSON 参数
+                });
+
+                console.log('HTTP状态码:', response.status); // 调试用
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || '注册失败');
+                }
+
+                //const data = await response.json();
+                console.log('注册成功:');
+                alert(`注册成功！用户名: ${username}`);
+                window.location.href = 'demo.html'; // 注册成功后跳转
+
+            } catch (error) {
+                console.error('注册错误:', error);
+                errorElement.textContent = error.message;
+            }
+        });
+// // 确认按钮点击事件
+// document.getElementById('queren').addEventListener('click', (e) => {
+//   e.preventDefault(); // 阻止表单默认提交行为
+//   const Username = document.getElementById('username').value;
   
-  if (!username) {
-    alert('请输入用户名!');
-    return;
-  }
+//   if (!Username) {
+//     alert('请输入用户名!');
+//     return;
+//   }
   
-  fetch(`http://192.168.128.1:8080/grecords?user=${encodeURIComponent(username)}`, {
-    method: 'GET'
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('服务器响应:', data);
-    // 只有在成功后才跳转页面
-    window.location.href = 'demo.html';
-  })
-  .catch(error => {
-    console.error('错误:', error);
-    alert('请求失败: ' + error.message);
-  });
-});
+//   fetch(`http://7jjvfv.natappfree.cc/grecords?userName=${encodeURIComponent(Username)}`, {
+//     method: 'GET'
+//   })
+//   .then(response => {
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+//     return response.json();
+//   })
+//   .then(data => {
+//     console.log('服务器响应:', data);
+//     // 只有在成功后才跳转页面
+//     window.location.href = 'demo.html';
+//   })
+//   .catch(error => {
+//     console.error('错误:', error);
+//     alert('请求失败: ' + error.message);
+//   });
+// });
     </script>
 </body>
 </html>

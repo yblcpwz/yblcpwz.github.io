@@ -61,6 +61,14 @@
         .refresh-button:hover {
             background-color: #45a049;
         }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -75,10 +83,12 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- 动态生成排行榜数据 -->
+                <tr>
+                    <td colspan="3" class="loading">正在加载排行榜数据...</td>
+                </tr>
             </tbody>
         </table>
-        <button class="refresh-button" onclick="refreshLeaderboard()">刷新排行榜</button>
+        <button class="refresh-button" onclick="fetchLeaderboardData()">刷新排行榜</button>
         <a href="demo.html">
             <button>返回</button>
         </a>
@@ -88,50 +98,98 @@
     </div>
 
     <script>
-        // 模拟排行榜数据
-        let leaderboardData = [
-            { name: "玩家A", score: 9850 },
-            { name: "玩家B", score: 9720 },
-            { name: "玩家C", score: 9680 },
-            { name: "玩家D", score: 9550 },
-            { name: "玩家E", score: 9430 },
-        ];
-
-        // 渲染排行榜
-        function renderLeaderboard() {
+        // 后端API地址 - 请替换为你的实际API地址
+        const API_URL = 'http://qf9y3g.natappfree.cc/rank';
+        
+        // 获取排行榜数据
+        async function fetchLeaderboardData() {
             const tbody = document.querySelector("#leaderboard tbody");
-            tbody.innerHTML = ""; // 清空现有数据
-
-            // 按得分排序
-            leaderboardData.sort((a, b) => b.score - a.score);
-
+            tbody.innerHTML = '<tr><td colspan="3" class="loading">正在加载排行榜数据...</td></tr>';
+            
+            try {
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态码: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // 渲染排行榜
+                renderLeaderboard(data);
+            } catch (error) {
+                console.error('获取排行榜数据失败:', error);
+                tbody.innerHTML = '<tr><td colspan="3" class="error">加载排行榜失败，请稍后再试</td></tr>';
+            }
+        }
+        
+        // 渲染排行榜
+        function renderLeaderboard(data) {
+            const tbody = document.querySelector("#leaderboard tbody");
+            tbody.innerHTML = "";
+            
+            // 确保数据是数组且不为空
+            if (!Array.isArray(data) ){
+                tbody.innerHTML = '<tr><td colspan="3" class="error">排行榜数据格式错误</td></tr>';
+                return;
+            }
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3">暂无排行榜数据</td></tr>';
+                return;
+            }
+            
+            // 只取前10名（如果不足10个则全部显示）
+            const topPlayers = data.slice(0, 10);
+            
             // 生成表格行
-            leaderboardData.forEach((player, index) => {
-                const row = `<tr>
-                    <td class="rank">${index + 1}</td>
-                    <td>${player.name}</td>
-                    <td>${player.score}</td>
-                </tr>`;
-                tbody.innerHTML += row;
+            topPlayers.forEach((player, index) => {
+                const row = document.createElement('tr');
+                
+                const rankCell = document.createElement('td');
+                rankCell.className = 'rank';
+                rankCell.textContent = index + 1;
+                
+                const nameCell = document.createElement('td');
+                nameCell.textContent = player.userName 
+                
+                const scoreCell = document.createElement('td');
+                scoreCell.textContent = player.playScore;
+                
+                row.appendChild(rankCell);
+                row.appendChild(nameCell);
+                row.appendChild(scoreCell);
+                
+                tbody.appendChild(row);
             });
+            
+            // 如果数据不足10条，补充空行保持表格美观（可选）
+            if (topPlayers.length < 10) {
+                for (let i = topPlayers.length; i < 10; i++) {
+                    const row = document.createElement('tr');
+                    
+                    const rankCell = document.createElement('td');
+                    rankCell.className = 'rank';
+                    rankCell.textContent = i + 1;
+                    
+                    const emptyCell = document.createElement('td');
+                    emptyCell.colSpan = 2;
+                    emptyCell.textContent = '-';
+                    emptyCell.style.color = '#999';
+                    
+                    row.appendChild(rankCell);
+                    row.appendChild(emptyCell);
+                    
+                    tbody.appendChild(row);
+                }
+            }
         }
-
-        // 刷新排行榜数据
-        function refreshLeaderboard() {
-            // 模拟更新数据（随机增加分数）
-            leaderboardData.forEach(player => {
-                player.score += Math.floor(Math.random() * 100);
-            });
-
-            // 重新渲染排行榜
-            renderLeaderboard();
-        }
-
-        // 初始化页面时渲染排行榜
-        renderLeaderboard();
-
-        // 定时刷新排行榜（每5秒）
-        setInterval(refreshLeaderboard, 5000);
+        
+        // 页面加载时获取数据
+        document.addEventListener('DOMContentLoaded', fetchLeaderboardData);
+        
+        // 定时刷新排行榜（每30秒）
+        setInterval(fetchLeaderboardData, 30000);
     </script>
 </body>
 </html>

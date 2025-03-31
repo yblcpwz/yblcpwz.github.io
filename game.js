@@ -443,9 +443,45 @@ function resumeGame() {
 }
 
 // 退出游戏
-function quitGame() {
+async function quitGame() {
+  const username = localStorage.getItem('username') ;
   localStorage.setItem("gameScore", score);
-  window.location.href = "gongxini.html";
+  
+  try {
+    await sendScoreToBackend(username, score);
+    window.location.href = "gongxini.html";
+  } catch (error) {
+    console.error('保存分数失败:', error);
+    // 可以添加用户提示，例如：
+    alert('分数保存失败，但您仍可以查看本地记录');
+    window.location.href = "gongxini.html";
+  }
+}
+
+// 发送分数到后端
+async function sendScoreToBackend(username, score) {
+  try {
+    const response = await fetch('http://qf9y3g.natappfree.cc/precords', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userName: username,
+        playScore: score,
+        timestamp: new Date().toISOString()
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP错误! 状态码: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('保存分数时出错:', error);
+    throw error; // 重新抛出错误以便外部处理
+  }
 }
 
 // 成就检测
@@ -577,8 +613,18 @@ function gameLoop() {
 
   if (timeLeft <= 0) {
     localStorage.setItem("gameScore", score);
-    window.location.href = "gongxini.html";
-    return;
+  const username = localStorage.getItem('username');
+  
+  // 直接使用全局的 sendScoreToBackend 函数
+  sendScoreToBackend(username, score)
+    .then(() => {
+      window.location.href = "gongxini.html";
+    })
+    .catch((error) => {
+      console.error('保存分数失败:', error);
+      window.location.href = "gongxini.html";
+    });
+  return;
   }
 
   animationFrameId = requestAnimationFrame(gameLoop);

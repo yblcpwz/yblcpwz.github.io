@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>历史得分与成就墙</title>
+    <title>个人成绩与成就墙</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,181 +23,279 @@
         h1 {
             text-align: center;
             color: #555;
+            margin-bottom: 20px;
         }
         .score-list {
             list-style-type: none;
             padding: 0;
+            margin-bottom: 30px;
         }
         .score-list li {
-            background: #eee;
+            background: #f8f9fa;
             margin: 10px 0;
-            padding: 10px;
-            border-radius: 4px;
+            padding: 12px 15px;
+            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid #4CAF50;
+        }
+        .score-list li:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
         }
         .score-list li span {
             font-weight: bold;
         }
+        .score-date {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .score-rank {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .score-value {
+            font-size: 1.1em;
+            color: #212529;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 20px;
+            font-weight: bold;
+        }
         .achievement {
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 16px;
-}
-
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
         .locked {
-    background-color: #ccc;
-    opacity: 0.6;
-    cursor: not-allowed;
-    color: transparent; /* 隐藏文字 */
-}
-
-.unlocked {
-    background-color: #4CAF50;
-    color: white;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-}
-#music-control {
+            background-color: #e9ecef;
+            color: #adb5bd;
+            cursor: not-allowed;
+            position: relative;
+        }
+        .locked:after {
+            content: "🔒";
             position: absolute;
+            right: 15px;
+        }
+        .unlocked {
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .unlocked:after {
+            content: "✓";
+            margin-left: 10px;
+        }
+        #music-control {
+            position: fixed;
             top: 20px;
             right: 20px;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
         }
-        /* 旋转动画 */
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         .rotate {
-            animation: spin 2s linear infinite; /* 持续旋转 */
+            animation: spin 2s linear infinite;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>历史得分</h1>
-        <ul class="score-list">
-            <li>
-                <span>100分</span>
-                <span>10名</span>
-                <span>2025年4月5日 11:00:34</span>
-            </li>
-            <li>
-                <span>120分</span>
-                <span>5名</span>
-                <span>2025年4月5日 11:12:34</span>
-            </li>
-            <li>
-                <span>20分</span>
-                <span>未上榜</span>
-                <span>2025年4月5日 11:20:34</span>
-            </li>
-        </ul>
+        <h1>我的成绩记录</h1>
+        <div id="personal-scores">
+            <div class="loading">正在加载您的成绩记录...</div>
+        </div>
+        
+        <h1>我的成就</h1>
         <div data-name="A" class="achievement locked">野路子：达到100分取得胜利</div>
         <div data-name="B" class="achievement locked">Alter the future：接住所有秒表</div>
         <div data-name="C" class="achievement locked">接住天大鹅：接住所有六只鹅</div>
         <div data-name="D" class="achievement locked">大户人家——碰到十次炸弹仍然胜利</div>
         <div data-name="E" class="achievement locked">冰冻达人——冰冻时间达到33秒</div>
-        <!-- <div class="achievement-wall">
-            <h2>成就墙</h2>
-            <div class="achievement locked" id="A">
-                <span>成就 1：首次游戏</span>
-            </div>
-            <div class="achievement locked" id="B">
-                <span>成就 2：得分超过 100 分</span>
-            </div>
-            <div class="achievement locked" id="C">
-                <span>成就 3：进入排行榜前 10 名</span>
-            </div>
-        </div> -->
-        <a href="demo3.html">
-            <button>返回</button>
-        </a>
+        
+        <div class="buttons">
+            <a href="demo3.html">
+                <button><i class="fas fa-arrow-left"></i> 返回</button>
+            </a>
+            <button onclick="refreshScores()"><i class="fas fa-sync-alt"></i> 刷新记录</button>
+        </div>
     </div>
-     <!-- 音乐控制按钮 -->
-  <div id="music-control">
-    <i class="fas fa-music"></i> <!-- 初始图标 -->
-</div>
-
-<!-- 背景音乐 -->
-<audio id="background-music" loop>
-    <source src="background-music.mp3" type="audio/mpeg">
-    您的浏览器不支持音频播放。
-</audio>
-    <script>
-        // 模拟成就解锁状态
-        /* const achievements = [
-            { id: 1, unlocked: true }, // 成就 1 已解锁
-            { id: 2, unlocked: false }, // 成就 2 未解锁
-            { id: 3, unlocked: true }, // 成就 3 已解锁
-        ]; */
-
-        // 读取成就状态
-        const achievements = JSON.parse(localStorage.getItem("achievements")) ;
-// 解锁成就的函数
-function unlockAchieve() {
-    // 获取所有成就元素
-    const achievementElements = document.querySelectorAll(".achievement");
     
-    // 遍历每个成就元素
-    achievementElements.forEach((element) => {
-        // 获取成就的名称（A, B, C, D, E）
-        const achievementName = element.getAttribute("data-name");
+    <!-- 音乐控制按钮 -->
+    <div id="music-control">
+        <i class="fas fa-music"></i>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="background-music" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+    
+    <script>
         
-        // 从 achievements 对象中读取对应的布尔值
-        const isUnlocked = achievements[achievementName];
+    
+    
+    // 从本地存储获取用户名
+    const userName = localStorage.getItem('username');
+    
+    // 获取个人成绩数据
+    async function fetchPersonalScores() {
+        const scoresContainer = document.getElementById('personal-scores');
+        scoresContainer.innerHTML = '<div class="loading">正在加载您的成绩记录...</div>';
         
-        // 如果成就已解锁
-        if (isUnlocked) {
-            // 移除 "locked" 类
-            element.classList.remove("locked");
-            // 添加 "unlocked" 类
-            element.classList.add("unlocked");
+        try {
+            const response = await fetch(`http://qf9y3g.natappfree.cc/grecords?userName=${encodeURIComponent(userName)}`);
+            
+            if (!response.ok) {
+                throw new Error(`请求失败: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log("后端返回的数据:", data);  // 检查实际字段名和数据结构
+            if (!data || !Array.isArray(data) || data.length === 0) {
+                scoresContainer.innerHTML = '<div class="error">暂无成绩记录</div>';
+                return;
+            }
+            
+            // 按分数降序排序（可选）
+            data.sort((a, b) => b.playscore - a.playscore);
+            
+            // 渲染成绩列表
+            renderScores(data);
+        } catch (error) {
+            console.error('获取成绩记录失败:', error);
+            scoresContainer.innerHTML = '<div class="error">加载成绩记录失败，请稍后再试</div>';
         }
-    });
-}
-
-// 页面加载时解锁成就
-window.onload = function () {
-
-    unlockAchieve();
-};
- // 清除 localStorage 中的成就信息
- localStorage.removeItem("achievements");    
- // 获取元素
- const musicControl = document.getElementById('music-control');
+    }
+    
+    // 渲染成绩列表（仅显示分数）
+    function renderScores(scores) {
+        const scoresContainer = document.getElementById('personal-scores');
+        const list = document.createElement('ul');
+        list.className = 'score-list';
+        
+        scores.forEach(score => {
+            const li = document.createElement('li');
+            
+            const scoreValue = document.createElement('span');
+            scoreValue.className = 'score-value';
+            scoreValue.textContent = `${score.playScore}分`;
+            
+            li.appendChild(scoreValue);
+            list.appendChild(li);
+        });
+        
+        scoresContainer.innerHTML = '';
+        scoresContainer.appendChild(list);
+    }
+    
+    
+        
+        // 格式化日期
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+        }
+        
+        // 刷新成绩
+        function refreshScores() {
+            fetchPersonalScores();
+        }
+        
+        // 解锁成就的函数
+        function unlockAchieve() {
+            // 从本地存储获取成就状态
+            const achievements = JSON.parse(localStorage.getItem("achievements")) || {};
+            
+            document.querySelectorAll(".achievement").forEach(element => {
+                const achievementName = element.getAttribute("data-name");
+                if (achievements[achievementName]) {
+                    element.classList.remove("locked");
+                    element.classList.add("unlocked");
+                }
+            });
+        }
+        
+        // 音乐控制
+        const musicControl = document.getElementById('music-control');
         const backgroundMusic = document.getElementById('background-music');
         const musicIcon = musicControl.querySelector('i');
-
-        // 初始状态  
         let isPlaying = false;
-
-        // 点击按钮控制音乐
+        
         musicControl.addEventListener('click', () => {
             if (isPlaying) {
-                backgroundMusic.pause(); // 暂停音乐
-                musicIcon.classList.remove('rotate'); // 停止旋转
+                backgroundMusic.pause();
+                musicIcon.classList.remove('rotate');
             } else {
-                backgroundMusic.play(); // 播放音乐
-                musicIcon.classList.add('rotate'); // 开始旋转
+                backgroundMusic.play().catch(e => console.log("自动播放被阻止:", e));
+                musicIcon.classList.add('rotate');
             }
-            isPlaying = !isPlaying; // 切换状态
+            isPlaying = !isPlaying;
         });
-
-        // 监听音乐结束事件（可选）
-        backgroundMusic.addEventListener('ended', () => {
-            musicIcon.classList.remove('rotate'); // 停止旋转
-            isPlaying = false;
-        }); 
+        
+        // 页面加载时执行
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchPersonalScores();
+            unlockAchieve();
+            
+            // 尝试自动播放音乐（可能需要用户交互）
+            document.addEventListener('click', () => {
+                if (!isPlaying) {
+                    backgroundMusic.play().catch(e => console.log("自动播放被阻止:", e));
+                    musicIcon.classList.add('rotate');
+                    isPlaying = true;
+                }
+            }, { once: true });
+        });
     </script>
 </body>
 </html>
