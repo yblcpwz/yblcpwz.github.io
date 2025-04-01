@@ -461,7 +461,7 @@ async function quitGame() {
 // 发送分数到后端
 async function sendScoreToBackend(username, score) {
   try {
-    const response = await fetch('http://qf9y3g.natappfree.cc/precords', {
+    const response = await fetch('http://2vsa8m.natappfree.cc/precords', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
